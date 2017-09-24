@@ -1,0 +1,46 @@
+1. What is difference between Model, View, Projection and View port ?
+             Set up your tripod and pointing the camera at the scene (viewing transformation).
+             Arrange the scene to be photographed into the desired composition (modeling transformation).
+             Choose a camera lens or adjust the zoom (projection transformation).
+             Determine how large you want the final photograph to be - for example, you might want it enlarged (viewport  transformation).
+             http://www.glprogramming.com/red/chapter03.html
+
+2. What is GLX library ?
+3. What is namespace ? why do we need to write "using namespace std" even if we included <iostream> ?
+             http://www.cplusplus.com/forum/beginner/49748/
+4. What is Display Struct in XWindow ? what is use of it ? which are the available members in it ?
+	http://xwindow.angelfire.com/page28.html
+	https://tronche.com/gui/x/xlib/display/opening.html
+5. What is XVisualInfo struct ?
+	https://tronche.com/gui/x/xlib/utilities/visual.html
+6. What is struct Colormap ?
+	https://tronche.com/gui/x/xlib/color/#colormap
+	Book: XLIB Programming Manual, Rel. 5 By Adrian Nye - Page 223
+7. What is window struct ?
+	Xlib.pdf - page 54
+8. What is XEvent ?
+	Xlib.pdf - page 182
+9. What is XPending(Display) function ? and how it behave ?
+
+10. What is XNextEvent(Display, *Event) function ? and how it behave ?
+	xlib.pdf page 216
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ref :
+https://www.x.org/releases/X11R7.6/doc/xorg-docs/specs/ICCCM/icccm.html
+
