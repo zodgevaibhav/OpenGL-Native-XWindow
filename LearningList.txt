@@ -10,4 +10,30 @@
              http://www.cplusplus.com/forum/beginner/49748/
 4. What is Display Struct in XWindow ? what is use of it ? which are the available members in it ?
 	http://xwindow.angelfire.com/page28.html
+	https://tronche.com/gui/x/xlib/display/opening.html
+5. What is XVisualInfo struct ?
+	https://tronche.com/gui/x/xlib/utilities/visual.html
+6. What is struct Colormap ?
+	https://tronche.com/gui/x/xlib/color/#colormap
+	Book: XLIB Programming Manual, Rel. 5 By Adrian Nye - Page 223
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ref :
+https://www.x.org/releases/X11R7.6/doc/xorg-docs/specs/ICCCM/icccm.html
 
