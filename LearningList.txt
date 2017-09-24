@@ -16,8 +16,15 @@
 6. What is struct Colormap ?
 	https://tronche.com/gui/x/xlib/color/#colormap
 	Book: XLIB Programming Manual, Rel. 5 By Adrian Nye - Page 223
-	
+7. What is window struct ?
+	Xlib.pdf - page 54
+8. What is XEvent ?
+	Xlib.pdf - page 182
+9. What is XPending(Display) function ? and how it behave ?
 
+10. What is XNextEvent(Display, *Event) function ? and how it behave ?
+	xlib.pdf page 216
+	
 
 
 
