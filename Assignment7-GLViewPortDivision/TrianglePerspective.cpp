@@ -94,24 +94,24 @@ int main(void)
 						{
 							case '1': //R
 								intX = 0;
-								intY = winHeight / 2;
-								resize(winWidth, winHeight);
+								intY = winHeight / 2;	
+								resize(winWidth/2, winHeight/2);
 								//glViewport(0, (GLsizei)winHeight/ 2, (GLsizei)winWidth/4, (GLsizei)winHeight/4);
 								break;
 							case '2':
 								intX = winWidth / 2;
 								intY = winHeight / 2;
-								resize(winWidth, winHeight);
+								resize(winWidth/2, winHeight/2);
 								break;
 							case '3':
 								intX = 0;
-								intY = 0;
-								resize(winWidth, winHeight);
+								intY =0;
+								resize(winWidth/2, winHeight/2);
 								break;
 							case '4': //R
 								intX = winWidth/2;
 								intY = 0;
-								resize(winWidth, winHeight);
+								resize(winWidth/2, winHeight/2);
 								break;
 							case '5': //R
 								intX = 0;
@@ -127,19 +127,19 @@ int main(void)
 							case '7': //R
 								intX = 0;
 								intY = winHeight/2;
-								resize(winWidth, winHeight);
+								resize(winWidth, winHeight/2);
 								break;
 
 							case '8': //R
 								intX = 0;
 								intY = 0;
-								resize(winWidth, winHeight);
+								resize(winWidth, winHeight/2);
 								break;
 
 							case '9': //R
 								intX = winWidth/4;
 								intY = winHeight/4;
-								resize(winWidth, winHeight );
+								resize(winWidth/2, winHeight/2 );
 								break;
 						}
 						break;
@@ -247,7 +247,7 @@ void CreateWindow(void)
 		exit(1);
 	}
 
-	XStoreName(gpDisplay,gWindow, "Assignment 7 - ViewPortDivision");
+	XStoreName(gpDisplay,gWindow, "Assignment 7 - ViewPortDivision	");
 
 	Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW",True);
 
@@ -332,12 +332,13 @@ void resize(int width, int height)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(0.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	//gluPerspective(0.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 	if(height==0)
 		height=1;
 
-		glViewport(intX, intY, (GLsizei)width, (GLsizei)height);
-	gluPerspective(0.0f, (GLfloat)width / (GLfloat)height, 100.0f, 100.0f);
+	glViewport(intX, intY, (GLsizei)width, (GLsizei)height);
+	
+	//gluPerspective(45, (GLfloat)width / (GLfloat)height, 100.0f, 100.0f);
 }
 
 void ToggleFullscreen(void)
@@ -365,19 +366,3 @@ void ToggleFullscreen(void)
 		StructureNotifyMask,
 		&xev);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

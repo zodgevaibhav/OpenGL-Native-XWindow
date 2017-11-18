@@ -168,6 +168,7 @@ int main(void)
 
 void CreateWindow(void)
 {
+	fprintf(gpFile,"FUN_IN: CreateWindow() \n");
 	void uninitialize(void);
 	
 	XSetWindowAttributes winAttribs;
@@ -242,11 +243,12 @@ void CreateWindow(void)
 	XSetWMProtocols(gpDisplay,gWindow,&windowManagerDelete,1);
 
 	XMapWindow(gpDisplay,gWindow);
-	
+	fprintf(gpFile,"FUN_OUT: CreateWindow() \n");
 }
 
 void uninitialize(void)
 {
+	fprintf(gpFile,"FUN_IN: uninitialize() \n");
 	GLXContext currentGLXContext;
 	currentGLXContext = glXGetCurrentContext();
 
@@ -283,11 +285,13 @@ void uninitialize(void)
 		fclose(gpFile);
 		gpFile=NULL;
 	}
+	fprintf(gpFile,"FUN_OUT: uninitialize() \n");
 }
 
 
 void initialize(void)
 {
+	fprintf(gpFile,"FUN_IN: initialize() \n");
 	void resize(int,int);
 	
 	gGLXContext=glXCreateContext(gpDisplay, gpXVisualInfo,NULL,GL_TRUE);
@@ -297,7 +301,8 @@ void initialize(void)
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 
 	resize(giWindowWidth,giWindowHeight);
-
+	
+	fprintf(gpFile,"FUN_OUT: uninitialize() \n");
 }
 
 void display(void)
@@ -342,7 +347,7 @@ void display(void)
 
 void resize(int width, int height)
 {
-	
+	fprintf(gpFile,"FUN_IN: resize() \n");	
 	if (height == 0)
 		height = 1;
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
@@ -351,10 +356,12 @@ void resize(int width, int height)
 	glLoadIdentity();
 
 	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	fprintf(gpFile,"FUN_OUT: resize() \n");	
 }
 
 void ToggleFullscreen(void)
 {
+	fprintf(gpFile,"FUN_IN: ToggleFullscreen() \n");	
 	Atom wm_state;
 	Atom fullscreen;
 	XEvent xev={0};
@@ -377,20 +384,6 @@ void ToggleFullscreen(void)
 		False,
 		StructureNotifyMask,
 		&xev);
+	
+	fprintf(gpFile,"FUN_OUT: ToggleFullscreen() \n");	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

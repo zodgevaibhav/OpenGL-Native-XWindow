@@ -1,0 +1,12 @@
+INFO: Log File Is Successfully Opened.
+INFO: Get visual infor From best GLXFBConfig.
+INFO: CreateColorMap done.
+INFO: CreateWindow done.
+OUT: Create window.
+IN: initialize() .
+INFO: glXCreateContextAttribsARB. Done
+INFO: glXCreateContextAttribsARB before .
+INFO: CreateContextAttribs done .
+INFO: make current context as OpenGL context .
+OUT: initialize() .
+INFO: Log File Is Successfully Closed.

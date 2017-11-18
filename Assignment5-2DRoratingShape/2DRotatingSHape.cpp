@@ -33,6 +33,10 @@ float angle = 0;
 
 GLXContext gGLXContext; //Created rendering context
 
+void drawTriangle(void);
+void drawRectangle(void);
+void updateAngle(void);
+
 int main(void)
 {
 	void CreateWindow(void);
@@ -138,10 +142,12 @@ void CreateWindow(void)
 	static int frameBufferAttributes[]=
 		{
 			GLX_RGBA, //Rendering type
-			GLX_RED_SIZE,1,
-			GLX_GREEN_SIZE,1,
-			GLX_BLUE_SIZE,1,
-			GLX_ALPHA_SIZE,1,
+			GLX_RED_SIZE,8,
+			GLX_GREEN_SIZE,8,
+			GLX_BLUE_SIZE,8,
+			GLX_ALPHA_SIZE,8,
+			GLX_DEPTH_SIZE,24,
+			GLX_DOUBLEBUFFER,True,
 			None  //macro is used to mention array is getting stopped
 		};
 	gpDisplay=XOpenDisplay(NULL); //before program start use of display, we must create connection to XServer. To create connection to XServer we use XOpenDisplay function/macro. 
@@ -245,7 +251,7 @@ void initialize(void)
 
 	glXMakeCurrent(gpDisplay,gWindow,gGLXContext);
 
-	glClearColor(0.0f,0.0f,1.0f,0.0f);
+	glClearColor(0.0f,0.0f,0.0f,0.0f);
 
 	resize(giWindowWidth,giWindowHeight);
 
@@ -253,42 +259,18 @@ void initialize(void)
 
 void display(void)
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
 	glMatrixMode(GL_MODELVIEW_MATRIX);
-	
 	glLoadIdentity();
-	
-	glLineWidth(2);
-	
-	glRotatef(angle, 0.0f, 1.0f, 0.0f);
-	angle = angle + 0.1f;
-	if (angle > 360.0f)
-		angle = 0.0f;
-	
-	glBegin(GL_LINES);
-
-	glColor3f(1.0f, 1.0f, 0.0f);
-
-	glVertex3f(0.0f, 0.5f, 0.0f);
-	glVertex3f(-0.5f, -0.5f, 0.0f);
-
-	glVertex3f(-0.5f, -0.5f, 0.0f);
-	glVertex3f(0.5f, -0.5f, 0.0f);
-
-	glVertex3f(0.5f, -0.5f, 0.0f);
-	glVertex3f(0.0f, 0.5f, 0.0f);
-
-	glEnd();
-
+	drawTriangle();
+	glLoadIdentity();
+	 drawRectangle();
 	glXSwapBuffers(gpDisplay,gWindow);
 }
 
 void resize(int width, int height)
 {
-
-	
-	
 	if(height==0)
 		height=1;
 
@@ -322,17 +304,51 @@ void ToggleFullscreen(void)
 }
 
 
+void drawTriangle() {
+	glLineWidth(2);
+
+	glTranslatef(-0.50f, 0.0f, -0.6f);
+	glRotatef(angle, 0.0f, 1.0f, 0.0f);
+
+	glBegin(GL_TRIANGLES);
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.45f, 0.0f);
+
+		glColor3f(0.0f, 0.45f, 0.0f);
+		glVertex3f(-0.45f, -0.45f, 0.0f);
+
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(0.45f, -0.45f, 0.0f);
+	glEnd();
+}
+
+void drawRectangle() {
+	glTranslatef(0.50f, 0.0f, -0.6f);
+	glRotatef(angle, 1.0f, 0.0f, 0.0f);
+	updateAngle();
+	glBegin(GL_QUADS);
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(0.45f, 0.45f, 0.0f);
 
 
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(-0.45f, 0.45f, 0.0f);
 
 
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(-0.45f, -0.45f, 0.0f);
 
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(0.45f, -0.45f, 0.0f);
 
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(0.45f, 0.45f, 0.0f);
+	glEnd();
+}
 
-
-
-
-
-
-
-
+void updateAngle()
+{
+	angle = angle + 0.1f;
+	if (angle > 360.0f)
+		angle = 0.0f;
+}

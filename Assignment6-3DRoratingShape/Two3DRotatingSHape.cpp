@@ -26,6 +26,10 @@ XVisualInfo *gpXVisualInfo=NULL;  //Single display can support multiple screens,
 Colormap gColormap;  //each xwindow is associated with color map which provides level of indirection between pixel value and color display on the screen.
 Window gWindow;  // This struct holds all the information about the Window
 
+void drawPyramid(void);
+void drawCube(void);
+	
+
 int giWindowWidth=800;
 int giWindowHeight=600;
 
@@ -259,6 +263,54 @@ void display(void)
 	
 	glMatrixMode(GL_MODELVIEW);
 	
+	drawPyramid();
+	drawCube();
+	
+	glXSwapBuffers(gpDisplay,gWindow);
+}
+
+void resize(int width, int height)
+{
+	
+	if (height == 0)
+		height = 1;
+	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+}
+
+void ToggleFullscreen(void)
+{
+	Atom wm_state;
+	Atom fullscreen;
+	XEvent xev={0};
+	
+	wm_state=XInternAtom(gpDisplay,"_NET_WM_STATE",False);
+	memset(&xev,0,sizeof(xev));
+
+	xev.type=ClientMessage;
+	xev.xclient.window=gWindow;
+	xev.xclient.message_type=wm_state;
+	xev.xclient.format=32;
+	xev.xclient.data.l[0]=bFullscreen ? 0 : 1;
+
+	fullscreen=XInternAtom(gpDisplay,"_NET_WM_STATE_FULLSCREEN",False);
+
+	xev.xclient.data.l[1]=fullscreen;
+
+	XSendEvent(gpDisplay,
+		RootWindow(gpDisplay,gpXVisualInfo->screen),
+		False,
+		StructureNotifyMask,
+		&xev);
+}
+
+void drawPyramid()
+{
+	
 	glLoadIdentity();
 	
 	angle=angle+0.1;
@@ -310,8 +362,13 @@ void display(void)
 	glColor3f(0.0f, 1.0f, 0.0f); //green
 	glVertex3f(-1.0f, -1.0f, 1.0f); //right-corner of left face
 	glEnd();
-	//*********************************************************************************************
 
+}
+
+void drawCube()
+{
+
+	
 	glLoadIdentity();
 	glTranslatef(2.0f, 0.0f, -6.0f);
 	glScalef(0.75f, 0.75f, 0.75f);
@@ -359,62 +416,5 @@ void display(void)
 	glVertex3f(-1.0f, -1.0f, -1.0f); //left-bottom of left face
 	glVertex3f(-1.0f, -1.0f, 1.0f); //right-bottom of left face
 	glEnd();
-
-
-	glXSwapBuffers(gpDisplay,gWindow);
-}
-
-void resize(int width, int height)
-{
 	
-	if (height == 0)
-		height = 1;
-	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
-
-void ToggleFullscreen(void)
-{
-	Atom wm_state;
-	Atom fullscreen;
-	XEvent xev={0};
-	
-	wm_state=XInternAtom(gpDisplay,"_NET_WM_STATE",False);
-	memset(&xev,0,sizeof(xev));
-
-	xev.type=ClientMessage;
-	xev.xclient.window=gWindow;
-	xev.xclient.message_type=wm_state;
-	xev.xclient.format=32;
-	xev.xclient.data.l[0]=bFullscreen ? 0 : 1;
-
-	fullscreen=XInternAtom(gpDisplay,"_NET_WM_STATE_FULLSCREEN",False);
-
-	xev.xclient.data.l[1]=fullscreen;
-
-	XSendEvent(gpDisplay,
-		RootWindow(gpDisplay,gpXVisualInfo->screen),
-		False,
-		StructureNotifyMask,
-		&xev);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

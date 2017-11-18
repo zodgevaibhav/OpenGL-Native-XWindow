@@ -11,6 +11,8 @@
 #include<X11/XKBlib.h> //for keyboard functions
 #include<X11/keysym.h> //for key code to symbol conversion functions
 
+#include<SOIL/SOIL.h> //for key code to symbol conversion functions
+
 //*******  OpenGL libraries
 #include<GL/gl.h>
 #include<GL/glu.h>
@@ -26,9 +28,18 @@ XVisualInfo *gpXVisualInfo=NULL;  //Single display can support multiple screens,
 Colormap gColormap;  //each xwindow is associated with color map which provides level of indirection between pixel value and color display on the screen.
 Window gWindow;  // This struct holds all the information about the Window
 
+void drawPyramid(void);
+void drawCube(void);
+	
+GLuint	smily; //texture object for smily texture
+
+
+void LoadGLTexture(GLuint *,const char *);
+
 int giWindowWidth=800;
 int giWindowHeight=600;
 
+float angle = 0;
 
 GLXContext gGLXContext; //Created rendering context
 
@@ -137,10 +148,12 @@ void CreateWindow(void)
 	static int frameBufferAttributes[]=
 		{
 			GLX_RGBA, //Rendering type
-			GLX_RED_SIZE,1,
-			GLX_GREEN_SIZE,1,
-			GLX_BLUE_SIZE,1,
-			GLX_ALPHA_SIZE,1,
+			GLX_RED_SIZE,8,    //for double buffer it is set to 8 lease it is 1 for single buffer
+			GLX_GREEN_SIZE,8,
+			GLX_BLUE_SIZE,8,
+			GLX_ALPHA_SIZE,8,
+			GLX_DEPTH_SIZE,24,   //for double buffer it is set to 24
+			GLX_DOUBLEBUFFER,True,
 			None  //macro is used to mention array is getting stopped
 		};
 	gpDisplay=XOpenDisplay(NULL); //before program start use of display, we must create connection to XServer. To create connection to XServer we use XOpenDisplay function/macro. 
@@ -191,7 +204,7 @@ void CreateWindow(void)
 		exit(1);
 	}
 
-	XStoreName(gpDisplay,gWindow, "Assignment 4 - TriangleGlPerspective");
+	XStoreName(gpDisplay,gWindow, "Assignment15 - SmilyTexture");
 
 	Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW",True);
 
@@ -244,46 +257,44 @@ void initialize(void)
 
 	glXMakeCurrent(gpDisplay,gWindow,gGLXContext);
 
-	glClearColor(0.0f,0.0f,1.0f,0.0f);
+	glClearColor(0.0f,0.0f,0.0f,0.0f);
+	
+	glShadeModel(GL_SMOOTH);
+	glClearDepth(1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-	resize(giWindowWidth,giWindowHeight);
+	glEnable(GL_TEXTURE_2D);
+
+
+//	LoadGLTexture(&smily,"Vijay_Kundali.bmp");
+	LoadGLTexture(&smily,"SMILY.bmp");
 
 }
 
 void display(void)
 {
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
-	glLineWidth(2);
-	glLoadIdentity();
-	//glTranslatef(0.0f,0.0f,-0.8f);
-	glBegin(GL_LINES);
-
-	glColor3f(1.0f, 1.0f, 0.0f);
-
-	glVertex3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(-1.0f, -1.0f, 0.0f);
-
-	glVertex3f(-1.0f, -1.0f, 0.0f);
-	glVertex3f(1.0f, -1.0f, 0.0f);
-
-	glVertex3f(1.0f, -1.0f, 0.0f);
-	glVertex3f(0.0f, 1.0f, 0.0f);
-
-	glEnd();
-
-	glFlush();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();	
+	drawCube();
+	
+	glXSwapBuffers(gpDisplay,gWindow);
 }
 
 void resize(int width, int height)
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	
+	if (height == 0)
+		height = 1;
+	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glViewport(0,0,(GLsizei)width,(GLsizei)height);
-	if(height==0)
-		height=1;
-	gluPerspective(45, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
-	
+
+	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 }
 
 void ToggleFullscreen(void)
@@ -312,18 +323,52 @@ void ToggleFullscreen(void)
 		&xev);
 }
 
+void drawCube()
+{
+
+	
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
+	glTranslatef(0.0f, 0.0f, -6.0f);
+
+	glBindTexture(GL_TEXTURE_2D, smily);
+
+	glBegin(GL_QUADS);
+
+	// FRONT FACE
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f); // right-top
+
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-1.0f, 1.0f, 0.0f); // left-top
+
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-1.0f, -1.0f, 0.0f); // left-bottom
+
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, 0.0f); // right-bottom
 
 
+	glEnd();
+	
+}
 
-
-
-
-
-
-
-
-
-
+void LoadGLTexture(GLuint *texture,const char * path)
+{
+	printf("********** IN - LoadGlTexture \n");
+	unsigned char* imageData=NULL;
+	int width, height;
+	imageData = SOIL_load_image(path, &width, &height, 0,SOIL_LOAD_AUTO);
+	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
+	glBindTexture(GL_TEXTURE_2D, *texture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+	
+	gluBuild2DMipmaps(GL_TEXTURE_2D,3,width,height, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)imageData);
+	
+	SOIL_free_image_data(imageData);
+	printf("********** OUT - LoadGlTexture \n");
+}
 
 
 

@@ -6,25 +6,24 @@
 
 
 //*******  X11 Library
-#include<X11/Xlib.h> //this is main file of Xlib, majority of Xlib symbols are declared in this file.
-#include<X11/Xutil.h>  //this library contain symbols required for inter-client communication (?)
-#include<X11/XKBlib.h> //for keyboard functions
-#include<X11/keysym.h> //for key code to symbol conversion functions
+#include<X11/Xlib.h>
+#include<X11/Xutil.h>
+#include<X11/XKBlib.h>
+#include<X11/keysym.h>
 
 //*******  OpenGL libraries
 #include<GL/gl.h>
-#include<GL/glu.h>
-#include<GL/glx.h>  //bridge library between opengl and X Window
+#include<GL/glx.h>
 
 //name space
-using namespace std; //directives for all identifier in current name space. Directive means, it help to define the scope to identify the "functions, variables.." within current name space. It also organize the code logically"
+using namespace std;
 
 bool bFullscreen=false;
-Display *gpDisplay=NULL;  //This is used as Handle to XServer which can be used to request the server. All the member under this struct indicase the specifics of XServer that the client (program) connected to.
+Display *gpDisplay=NULL;
 
-XVisualInfo *gpXVisualInfo=NULL;  //Single display can support multiple screens, each screen can have multiple visuals types supported at different depth.
-Colormap gColormap;  //each xwindow is associated with color map which provides level of indirection between pixel value and color display on the screen.
-Window gWindow;  // This struct holds all the information about the Window
+XVisualInfo *gpXVisualInfo=NULL;
+Colormap gColormap;
+Window gWindow;
 
 int giWindowWidth=800;
 int giWindowHeight=600;
@@ -50,14 +49,14 @@ int main(void)
 
 	initialize();
 
-	XEvent event; //Every event in XWindow has its own struct (actually struct XAnyEvent) with type {GraphicExpose etc..}, XEvent is union of all the events.
-	KeySym keysym;  //KeySym is the key symbol mapped with key code, when any key press event occur XWindow send KeyPress event alomg with KeyCode of the key pressed. KeyCode and KeySym are mapped together. KeyCode is Physycal Key lies between range of 8 to 255, in geometry fashion, so that it can be interpreted server-dependent fashion and desierd KeySym can be mapped. Mapping between Key and KeyCode can not be changed
+	XEvent event;
+	KeySym keysym;
 
 	while(bDone==false)
 	{
-		while(XPending(gpDisplay))  //XPending return the event count (int) that are received from XServer for the display but not yet been removed from queue. If no event in list then it returns 0.
+		while(XPending(gpDisplay))
 		{
-			XNextEvent(gpDisplay,&event);  //get next event from the event queue and then flush it from the queue for the display. If no event received then it flush the output buffer and block until an event is reveived.
+			XNextEvent(gpDisplay,&event);
 			switch(event.type)
 				{
 					case MapNotify:
@@ -191,7 +190,7 @@ void CreateWindow(void)
 		exit(1);
 	}
 
-	XStoreName(gpDisplay,gWindow, "Assignment 4 - TriangleGlPerspective");
+	XStoreName(gpDisplay,gWindow, "First Open GL XWindow");
 
 	Atom windowManagerDelete=XInternAtom(gpDisplay, "WM_DELETE_WINDOW",True);
 
@@ -252,38 +251,16 @@ void initialize(void)
 
 void display(void)
 {
-	
-	glLineWidth(2);
-	glLoadIdentity();
-	//glTranslatef(0.0f,0.0f,-0.8f);
-	glBegin(GL_LINES);
-
-	glColor3f(1.0f, 1.0f, 0.0f);
-
-	glVertex3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(-1.0f, -1.0f, 0.0f);
-
-	glVertex3f(-1.0f, -1.0f, 0.0f);
-	glVertex3f(1.0f, -1.0f, 0.0f);
-
-	glVertex3f(1.0f, -1.0f, 0.0f);
-	glVertex3f(0.0f, 1.0f, 0.0f);
-
-	glEnd();
-
+	glClear(GL_COLOR_BUFFER_BIT);
 	glFlush();
 }
 
 void resize(int width, int height)
 {
-	glClear(GL_COLOR_BUFFER_BIT);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glViewport(0,0,(GLsizei)width,(GLsizei)height);
 	if(height==0)
 		height=1;
-	gluPerspective(45, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
-	
+
+	glViewport(0,0,(GLsizei)width,(GLsizei)height);
 }
 
 void ToggleFullscreen(void)
